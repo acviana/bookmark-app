@@ -9,7 +9,16 @@
 	"compatibility_date": "2025-07-26",
 	"observability": {
 		"enabled": true
-	}
+	},
+
+		"d1_databases": [
+			{
+				"binding": "DB",
+				"database_name": "bookmark-app",
+				"database_id": "b79c0f11-bcd7-4a04-bae8-63a301bf1a61"
+			}
+		]
+
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
