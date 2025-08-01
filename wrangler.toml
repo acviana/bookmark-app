@@ -1,4 +1,4 @@
-name = "bookmark-app"
+name = "bookmark-api"
 main = "apps/api/src/index.ts"
 compatibility_date = "2025-07-26"
 

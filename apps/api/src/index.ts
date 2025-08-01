@@ -19,6 +19,18 @@ export default {
 		const url = new URL(request.url);
 		const { pathname, searchParams } = url;
 
+		// Handle CORS preflight requests
+		if (request.method === 'OPTIONS') {
+			return new Response(null, {
+				status: 204,
+				headers: {
+					'Access-Control-Allow-Origin': '*', // or your frontend URL
+					'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+					'Access-Control-Allow-Headers': 'Content-Type',
+				},
+			});
+		}
+
 		if (request.method === 'POST' && pathname === '/bookmarks') {
 			const body = await request.json();
 			const id = uuid();
@@ -26,21 +38,34 @@ export default {
 				'INSERT INTO bookmarks (id, url, title, tags) VALUES (?, ?, ?, ?)'
 			).bind(id, body.url, body.title, body.tags?.join(',')).run();
 
-			return Response.json({ success: true, id });
+			return new Response(JSON.stringify({ success: true, id }), {
+				headers: {
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Origin': '*',
+				},
+			});
 		}
 
 		if (request.method === 'GET' && pathname === '/bookmarks') {
 			const tagFilter = searchParams.get('tag');
 			const stmt = tagFilter
-				? env.DB.prepare("SELECT * FROM bookmarks WHERE tags LIKE ?").bind('%${tagFilter}%')
+				? env.DB.prepare("SELECT * FROM bookmarks WHERE tags LIKE ?").bind(`%${tagFilter}%`)
 				: env.DB.prepare("SELECT * FROM bookmarks");
 
 			const { results } = await stmt.all();
-			return Response.json(results);
+
+			return new Response(JSON.stringify(results), {
+				headers: {
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Origin': '*',
+				},
+			});
 		}
 
-		return new Response('Not Found', { status: 404 });
-	}
+		return new Response('Not Found', {
+			status: 404,
+			headers: { 'Access-Control-Allow-Origin': '*' },
+		});
+	},
 };
-
 
