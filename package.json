@@ -1,7 +1,8 @@
 {
-	"name": "bookmark-api",
+	"name": "bookmark-app",
 	"version": "0.0.0",
 	"private": true,
+	"workspaces": ["apps/*"],
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",

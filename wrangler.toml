@@ -1,0 +1,29 @@
+name = "bookmark-app"
+main = "apps/api/src/index.ts"
+compatibility_date = "2025-07-26"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bookmark-app"
+database_id = "b79c0f11-bcd7-4a04-bae8-63a301bf1a61"
+
+# Optional Smart Placement
+# [placement]
+# mode = "smart"
+
+# Optional: environment variables
+# [vars]
+# MY_VARIABLE = "production_value"
+
+# Optional: static asset binding
+# [assets]
+# directory = "./public/"
+# binding = "ASSETS"
+
+# Optional: service bindings
+# [[services]]
+# binding = "MY_SERVICE"
+# service = "my-service"
