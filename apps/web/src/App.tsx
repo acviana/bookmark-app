@@ -1,5 +1,15 @@
 
 import React, { useEffect, useState } from "react";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 type Bookmark = {
 	id: string;
@@ -16,7 +26,6 @@ export default function App() {
 
 	const api_url = "https://bookmark-api.alexcostaviana.workers.dev/bookmarks";
 
-	// Fetch bookmarks with optional tag filter
 	useEffect(() => {
 		setLoading(true);
 		const url = selectedTag ? `${api_url}?tag=${encodeURIComponent(selectedTag)}` : api_url;
@@ -34,62 +43,57 @@ export default function App() {
 	}, [selectedTag]);
 
 	return (
-		<div className="p-6">
+		<div className="p-6 max-w-6xl mx-auto">
 			<h1 className="text-2xl font-bold mb-4">Bookmarks</h1>
 
-
 			{selectedTag && (
-				<div className="mb-4 flex items-center space-x-2">
-					<span className="text-gray-700">Filtering by tag:</span>
-					<span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-sm font-medium">
-						{selectedTag}
-					</span>
-					<button
-						onClick={() => setSelectedTag(null)}
-						className="text-sm text-red-600 underline hover:text-red-800"
-					>
+				<div className="mb-4 flex items-center gap-2">
+					<span className="text-muted-foreground text-sm">Filtering by tag:</span>
+					<Badge variant="outline">{selectedTag}</Badge>
+					<Button variant="link" className="text-destructive p-0 h-auto text-sm" onClick={() => setSelectedTag(null)}>
 						× Clear
-					</button>
+					</Button>
 				</div>
 			)}
 
 			{loading ? (
-				<p>Loading…</p>
+				<p className="text-sm text-muted-foreground">Loading…</p>
 			) : (
-				<table className="min-w-full table-auto border border-gray-300">
-					<thead className="bg-gray-100">
-						<tr>
-							<th className="px-4 py-2 text-left border">Title</th>
-							<th className="px-4 py-2 text-left border">URL</th>
-							<th className="px-4 py-2 text-left border">Tags</th>
-							<th className="px-4 py-2 text-left border">Created At</th>
-						</tr>
-					</thead>
-					<tbody>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Title</TableHead>
+							<TableHead>URL</TableHead>
+							<TableHead>Tags</TableHead>
+							<TableHead>Created</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
 						{bookmarks.map((bm) => (
-							<tr key={bm.id} className="hover:bg-gray-50">
-								<td className="px-4 py-2 border">{bm.title}</td>
-								<td className="px-4 py-2 border">
+							<TableRow key={bm.id}>
+								<TableCell>{bm.title}</TableCell>
+								<TableCell>
 									<a href={bm.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
 										{bm.url}
 									</a>
-								</td>
-								<td className="px-4 py-2 border">
+								</TableCell>
+								<TableCell className="space-x-1">
 									{bm.tags.split(",").map((tag) => (
-										<button
+										<Badge
 											key={tag}
+											variant="secondary"
+											className="cursor-pointer hover:opacity-80"
 											onClick={() => setSelectedTag(tag)}
-											className="mr-2 text-sm text-blue-600 underline hover:text-blue-800"
 										>
 											{tag}
-										</button>
+										</Badge>
 									))}
-								</td>
-								<td className="px-4 py-2 border">{bm.created_at}</td>
-							</tr>
+								</TableCell>
+								<TableCell>{bm.created_at}</TableCell>
+							</TableRow>
 						))}
-					</tbody>
-				</table>
+					</TableBody>
+				</Table>
 			)}
 		</div>
 	);
