@@ -1,4 +1,5 @@
 
+// App.tsx
 import React, { useEffect, useState } from "react";
 import {
 	Table,
@@ -10,6 +11,18 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogTrigger,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+	DialogFooter,
+	DialogClose
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type Bookmark = {
 	id: string;
@@ -24,9 +37,13 @@ export default function App() {
 	const [loading, setLoading] = useState(true);
 	const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
+	const [newTitle, setNewTitle] = useState("");
+	const [newUrl, setNewUrl] = useState("");
+	const [newTags, setNewTags] = useState("");
+
 	const api_url = "https://bookmark-api.alexcostaviana.workers.dev/bookmarks";
 
-	useEffect(() => {
+	const fetchBookmarks = () => {
 		setLoading(true);
 		const url = selectedTag ? `${api_url}?tag=${encodeURIComponent(selectedTag)}` : api_url;
 
@@ -40,11 +57,91 @@ export default function App() {
 				console.error("Failed to fetch bookmarks:", err);
 				setLoading(false);
 			});
+	};
+
+	useEffect(() => {
+		fetchBookmarks();
 	}, [selectedTag]);
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		const res = await fetch(api_url, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				title: newTitle,
+				url: newUrl,
+				tags: newTags.split(",").map((t) => t.trim()).filter(Boolean)
+			})
+		});
+
+		if (res.ok) {
+			// Clear form + close dialog
+			setNewTitle("");
+			setNewUrl("");
+			setNewTags("");
+			fetchBookmarks();
+		} else {
+			console.error("Failed to add bookmark");
+		}
+	};
 
 	return (
 		<div className="p-6 max-w-6xl mx-auto">
-			<h1 className="text-2xl font-bold mb-4">Bookmarks</h1>
+			<div className="flex justify-between items-center mb-4">
+				<h1 className="text-2xl font-bold">Bookmarks</h1>
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button>Add Link</Button>
+					</DialogTrigger>
+					<DialogContent>
+						<form onSubmit={handleSubmit}>
+							<DialogHeader>
+								<DialogTitle>Add a New Bookmark</DialogTitle>
+								<DialogDescription>
+									Enter the details for your new bookmark.
+								</DialogDescription>
+							</DialogHeader>
+							<div className="grid gap-4 py-4">
+								<div className="grid gap-2">
+									<Label htmlFor="title">Title</Label>
+									<Input
+										id="title"
+										value={newTitle}
+										onChange={(e) => setNewTitle(e.target.value)}
+										required
+									/>
+								</div>
+								<div className="grid gap-2">
+									<Label htmlFor="url">URL</Label>
+									<Input
+										id="url"
+										type="url"
+										value={newUrl}
+										onChange={(e) => setNewUrl(e.target.value)}
+										required
+									/>
+								</div>
+								<div className="grid gap-2">
+									<Label htmlFor="tags">Tags (comma-separated)</Label>
+									<Input
+										id="tags"
+										value={newTags}
+										onChange={(e) => setNewTags(e.target.value)}
+									/>
+								</div>
+							</div>
+							<DialogFooter>
+								<DialogClose asChild>
+									<Button type="button" variant="outline">Cancel</Button>
+								</DialogClose>
+								<Button type="submit">Add</Button>
+							</DialogFooter>
+						</form>
+					</DialogContent>
+				</Dialog>
+			</div>
 
 			{selectedTag && (
 				<div className="mb-4 flex items-center gap-2">
