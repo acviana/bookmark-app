@@ -156,11 +156,11 @@ export default function App() {
 			{loading ? (
 				<p className="text-sm text-muted-foreground">Loading…</p>
 			) : (
+
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead>Title</TableHead>
-							<TableHead>URL</TableHead>
+							<TableHead>Link</TableHead>
 							<TableHead>Tags</TableHead>
 							<TableHead>Created</TableHead>
 						</TableRow>
@@ -168,10 +168,14 @@ export default function App() {
 					<TableBody>
 						{bookmarks.map((bm) => (
 							<TableRow key={bm.id}>
-								<TableCell>{bm.title}</TableCell>
 								<TableCell>
-									<a href={bm.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-										{bm.url}
+									<a
+										href={bm.url}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="text-blue-600 underline"
+									>
+										{bm.title}
 									</a>
 								</TableCell>
 								<TableCell className="space-x-1">
