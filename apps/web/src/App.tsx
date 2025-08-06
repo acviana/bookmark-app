@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Footer from "@/components/Footer";
 
 type Bookmark = {
 	id: string;
@@ -196,6 +197,7 @@ export default function App() {
 					</TableBody>
 				</Table>
 			)}
+			<Footer />
 		</div>
 	);
 }
