@@ -8,9 +8,9 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "./components/ui/table";
+import { Badge } from "./components/ui/badge";
+import { Button } from "./components/ui/button";
 import {
 	Dialog,
 	DialogTrigger,
@@ -41,6 +41,8 @@ export default function App() {
 	const [newTitle, setNewTitle] = useState("");
 	const [newUrl, setNewUrl] = useState("");
 	const [newTags, setNewTags] = useState("");
+
+	const [dialogOpen, setDialogOpen] = useState(false);
 
 	const api_url = "https://bookmark-api.alexcostaviana.workers.dev/bookmarks";
 
@@ -82,6 +84,7 @@ export default function App() {
 			setNewTitle("");
 			setNewUrl("");
 			setNewTags("");
+			setDialogOpen(false);
 			fetchBookmarks();
 		} else {
 			console.error("Failed to add bookmark");
@@ -92,9 +95,9 @@ export default function App() {
 		<div className="p-6 max-w-6xl mx-auto">
 			<div className="flex justify-between items-center mb-4">
 				<h1 className="text-2xl font-bold">Bookmarks</h1>
-				<Dialog>
+				<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
 					<DialogTrigger asChild>
-						<Button>Add Link</Button>
+						<Button onClick={() => setDialogOpen(true)}>Add Link</Button>
 					</DialogTrigger>
 					<DialogContent>
 						<form onSubmit={handleSubmit}>
@@ -134,9 +137,7 @@ export default function App() {
 								</div>
 							</div>
 							<DialogFooter>
-								<DialogClose asChild>
-									<Button type="button" variant="outline">Cancel</Button>
-								</DialogClose>
+								<Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
 								<Button type="submit">Add</Button>
 							</DialogFooter>
 						</form>
@@ -144,61 +145,65 @@ export default function App() {
 				</Dialog>
 			</div>
 
-			{selectedTag && (
-				<div className="mb-4 flex items-center gap-2">
-					<span className="text-muted-foreground text-sm">Filtering by tag:</span>
-					<Badge variant="outline">{selectedTag}</Badge>
-					<Button variant="link" className="text-destructive p-0 h-auto text-sm" onClick={() => setSelectedTag(null)}>
-						× Clear
-					</Button>
-				</div>
-			)}
+			{
+				selectedTag && (
+					<div className="mb-4 flex items-center gap-2">
+						<span className="text-muted-foreground text-sm">Filtering by tag:</span>
+						<Badge variant="outline">{selectedTag}</Badge>
+						<Button variant="link" className="text-destructive p-0 h-auto text-sm" onClick={() => setSelectedTag(null)}>
+							× Clear
+						</Button>
+					</div>
+				)
+			}
 
-			{loading ? (
-				<p className="text-sm text-muted-foreground">Loading…</p>
-			) : (
+			{
+				loading ? (
+					<p className="text-sm text-muted-foreground">Loading…</p>
+				) : (
 
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>Link</TableHead>
-							<TableHead>Tags</TableHead>
-							<TableHead>Created</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{bookmarks.map((bm) => (
-							<TableRow key={bm.id}>
-								<TableCell>
-									<a
-										href={bm.url}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-blue-600 underline"
-									>
-										{bm.title}
-									</a>
-								</TableCell>
-								<TableCell className="space-x-1">
-									{bm.tags.split(",").map((tag) => (
-										<Badge
-											key={tag}
-											variant="secondary"
-											className="cursor-pointer hover:opacity-80"
-											onClick={() => setSelectedTag(tag)}
-										>
-											{tag}
-										</Badge>
-									))}
-								</TableCell>
-								<TableCell>{bm.created_at}</TableCell>
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead>Link</TableHead>
+								<TableHead>Tags</TableHead>
+								<TableHead>Created</TableHead>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			)}
+						</TableHeader>
+						<TableBody>
+							{bookmarks.map((bm) => (
+								<TableRow key={bm.id}>
+									<TableCell>
+										<a
+											href={bm.url}
+											target="_blank"
+											rel="noopener noreferrer"
+											className="text-blue-600 underline"
+										>
+											{bm.title}
+										</a>
+									</TableCell>
+									<TableCell className="space-x-1">
+										{bm.tags.split(",").map((tag) => (
+											<Badge
+												key={tag}
+												variant="secondary"
+												className="cursor-pointer hover:opacity-80"
+												onClick={() => setSelectedTag(tag)}
+											>
+												{tag}
+											</Badge>
+										))}
+									</TableCell>
+									<TableCell>{bm.created_at}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				)
+			}
 			<Footer />
-		</div>
+		</div >
 	);
 }
 
