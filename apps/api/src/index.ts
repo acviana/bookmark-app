@@ -49,8 +49,8 @@ export default {
 		if (request.method === 'GET' && pathname === '/bookmarks') {
 			const tagFilter = searchParams.get('tag');
 			const stmt = tagFilter
-				? env.DB.prepare("SELECT * FROM bookmarks WHERE tags LIKE ?").bind(`%${tagFilter}%`)
-				: env.DB.prepare("SELECT * FROM bookmarks");
+				? env.DB.prepare("SELECT * FROM bookmarks WHERE tags LIKE ? ORDER BY created_at DESC").bind(`%${tagFilter}%`)
+				: env.DB.prepare("SELECT * FROM bookmarks ORDER BY created_at DESC");
 
 			const { results } = await stmt.all();
 
