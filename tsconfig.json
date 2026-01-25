@@ -41,7 +41,8 @@
 		],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@bookmark-app/shared": ["apps/shared/src/types.ts"]
 		}
 	},
 	"exclude": ["test"],
