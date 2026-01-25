@@ -8,7 +8,7 @@ const labelVariants = cva(
   "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 )
 
-interface LabelProps extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> {}
+type LabelProps = React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>;
 
 const Label = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,

@@ -1,6 +1,6 @@
 
 // App.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
 	Table,
 	TableBody,
@@ -18,8 +18,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogDescription,
-	DialogFooter,
-	DialogClose
+	DialogFooter
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +45,7 @@ export default function App() {
 
 	const api_url = "https://bookmark-api.alexcostaviana.workers.dev/bookmarks";
 
-	const fetchBookmarks = () => {
+	const fetchBookmarks = useCallback(() => {
 		setLoading(true);
 		const url = selectedTag ? `${api_url}?tag=${encodeURIComponent(selectedTag)}` : api_url;
 
@@ -60,11 +59,11 @@ export default function App() {
 				console.error("Failed to fetch bookmarks:", err);
 				setLoading(false);
 			});
-	};
+	}, [selectedTag, api_url]);
 
 	useEffect(() => {
 		fetchBookmarks();
-	}, [selectedTag]);
+	}, [fetchBookmarks]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

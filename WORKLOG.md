@@ -14,7 +14,7 @@
 - [x] Fix vitest.config.mts (wrangler.jsonc → wrangler.toml)
 - [x] Create apps/shared workspace with TypeScript types
 - [x] Convert 6 UI components from .jsx to .tsx
-- [ ] Add ESLint configuration
+- [x] Add ESLint configuration
 - [ ] Create D1 migration file and docs
 - [ ] Update API tests to match actual endpoints
 
@@ -60,15 +60,27 @@
   - dialog.tsx - Added interfaces for all dialog components
   - Used permissive typing (extending HTML attributes)
   - Git preserved rename history
+- ✅ Added ESLint configuration with TypeScript and React support
+  - Installed ESLint 9.x with flat config format
+  - Configured @typescript-eslint/recommended preset
+  - Added React and React Hooks plugins
+  - Fixed all empty interface issues (changed to type aliases)
+  - Fixed React useCallback/useEffect dependencies in App.tsx
+  - Disabled prop-types (using TypeScript instead)
+  - Added lint and lint:fix scripts to package.json
+  - All files now pass linting with zero errors
 
 ### Issues Encountered
-- None so far
+- ESLint 9 requires new flat config format (eslint.config.js instead of .eslintrc.json)
+- Empty interface warnings resolved by using type aliases instead
+- React hooks exhaustive-deps warnings fixed with useCallback
 
 ### Commits Made
 1. `058306a` - docs: add AGENTS.md and WORKLOG.md for AI agent guidance
 2. `feaacbb` - fix: update vitest config to reference wrangler.toml
 3. `d7e4278` - feat: add shared types workspace for API/web consistency
-4. (pending) - refactor: convert UI components from jsx to tsx
+4. `5bda395` - refactor: convert UI components from jsx to tsx
+5. (pending) - feat: add ESLint with TypeScript and React support
 
 ### Notes
 - Database schema retrieved from production D1
