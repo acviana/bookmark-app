@@ -13,7 +13,7 @@
 - [x] Create AGENTS.md and WORKLOG.md documentation
 - [x] Fix vitest.config.mts (wrangler.jsonc → wrangler.toml)
 - [x] Create apps/shared workspace with TypeScript types
-- [ ] Convert 6 UI components from .jsx to .tsx
+- [x] Convert 6 UI components from .jsx to .tsx
 - [ ] Add ESLint configuration
 - [ ] Create D1 migration file and docs
 - [ ] Update API tests to match actual endpoints
@@ -51,6 +51,15 @@
   - Configured workspace in package.json
   - Added path mapping in tsconfig.json
   - Types defined but not yet consumed (will be used in tasks 7, 8, 9)
+- ✅ Converted 6 UI components from .jsx to .tsx
+  - badge.tsx - Added BadgeProps interface
+  - button.tsx - Added ButtonProps with variant and size types
+  - input.tsx - Added InputProps interface
+  - label.tsx - Added LabelProps using Radix UI types
+  - table.tsx - Added interfaces for all 8 table components
+  - dialog.tsx - Added interfaces for all dialog components
+  - Used permissive typing (extending HTML attributes)
+  - Git preserved rename history
 
 ### Issues Encountered
 - None so far
@@ -58,7 +67,8 @@
 ### Commits Made
 1. `058306a` - docs: add AGENTS.md and WORKLOG.md for AI agent guidance
 2. `feaacbb` - fix: update vitest config to reference wrangler.toml
-3. (pending) - feat: add shared types workspace for API/web consistency
+3. `d7e4278` - feat: add shared types workspace for API/web consistency
+4. (pending) - refactor: convert UI components from jsx to tsx
 
 ### Notes
 - Database schema retrieved from production D1
@@ -67,10 +77,11 @@
 - Tests are outdated (still testing "Hello World")
 
 ### Next Steps
-- Commit shared types workspace
-- Convert UI components from .jsx to .tsx (6 files)
-- Add ESLint configuration
-- Continue with remaining Phase 1 tasks
+- Commit UI component TypeScript conversion
+- Add ESLint configuration and fix any issues
+- Create database migration documentation
+- Update API tests to match actual endpoints
+- Continue with Hono migration
 
 ---
 
