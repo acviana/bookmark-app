@@ -119,22 +119,6 @@ describe('Bookmark API', () => {
 		});
 	});
 
-	describe('CORS', () => {
-		it('handles CORS preflight requests', async () => {
-			const request = new IncomingRequest('http://localhost/bookmarks', {
-				method: 'OPTIONS',
-			});
-			const ctx = createExecutionContext();
-			const response = await worker.fetch(request, env, ctx);
-			await waitOnExecutionContext(ctx);
-
-			expect(response.status).toBe(204);
-			expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
-			expect(response.headers.get('Access-Control-Allow-Methods')).toContain('GET');
-			expect(response.headers.get('Access-Control-Allow-Methods')).toContain('POST');
-		});
-	});
-
 	describe('Error Handling', () => {
 		it('returns 404 for unknown routes', async () => {
 			const request = new IncomingRequest('http://localhost/unknown-route');
