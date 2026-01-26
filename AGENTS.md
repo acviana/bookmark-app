@@ -102,9 +102,9 @@ CREATE TABLE bookmarks (
 
 #### Middleware Stack
 
-1. Logger (request logging)
-2. Error handler (catches unhandled errors)
-3. CORS (allow all origins)
+1. CORS (allow all origins via `hono/cors`)
+
+**Note**: Error handler and logger middleware are planned but not yet implemented.
 
 ## Development Workflow
 
