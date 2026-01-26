@@ -134,4 +134,16 @@ describe('Bookmark API', () => {
 			expect(response.headers.get('Access-Control-Allow-Methods')).toContain('POST');
 		});
 	});
+
+	describe('Error Handling', () => {
+		it('returns 404 for unknown routes', async () => {
+			const request = new IncomingRequest('http://localhost/unknown-route');
+			const ctx = createExecutionContext();
+			const response = await worker.fetch(request, env, ctx);
+			await waitOnExecutionContext(ctx);
+
+			expect(response.status).toBe(404);
+			expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
+		});
+	});
 });

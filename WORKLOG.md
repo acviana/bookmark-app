@@ -1,5 +1,79 @@
 # Development Worklog
 
+## 2026-01-25 - Pre-commit Hooks and D1 Testing Setup
+
+### Objectives
+
+- Set up quality gates (pre-commit hooks) before Hono migration
+- Implement proper D1 testing with official Cloudflare pattern
+- Expand test coverage for happy path scenarios
+
+### What Was Done
+
+- ✅ **Added pre-commit hooks with Husky**
+  - Installed Husky and Prettier
+  - Created `.husky/pre-commit` hook that runs on every commit:
+    - `npm run lint` - ESLint checks
+    - `npm run typecheck` - TypeScript type checking
+    - `npm run format:check` - Prettier formatting verification
+  - Added `"type": "module"` to package.json to eliminate ESLint warnings
+  - Formatted entire codebase with Prettier (25 files updated)
+- ✅ **Added comprehensive NPM scripts**
+  - `npm run typecheck` - TypeScript validation
+  - `npm run test:watch` - Watch mode for tests
+  - `npm run test:coverage` - Test coverage reporting
+  - `npm run format` - Auto-format with Prettier
+  - `npm run format:check` - Check formatting without modifying
+  - `npm run db:migrate:local` - Run local D1 migrations
+  - `npm run db:migrate:remote` - Run remote D1 migrations (fixed database name: bookmark-app)
+
+- ✅ **Implemented official Cloudflare D1 testing pattern**
+  - Updated `vitest.config.mts` to use `readD1Migrations()` and `applyD1Migrations()`
+  - Created `test/apply-migrations.ts` setup file for automatic schema migration
+  - Added `TEST_MIGRATIONS` binding type to `test/env.d.ts`
+  - Configured `singleWorker: true` for faster test execution
+  - Tests now use proper isolated storage (automatic rollback per test)
+  - No manual database setup needed in tests
+
+- ✅ **Enhanced test coverage for happy path**
+  - POST test now verifies bookmark ID is a non-empty string
+  - Added integration test: POST bookmark → GET to verify persistence
+  - Enhanced tag filter test to actually verify filtering works (not just response type)
+  - Added 404 test for unknown routes
+  - All 6 tests passing with proper D1 isolation
+
+### Decisions Made
+
+1. **Testing approach**: Use official `readD1Migrations()` + `applyD1Migrations()` pattern (not manual `beforeAll()` hooks)
+2. **Pre-commit checks**: Run lint + typecheck + format:check (but not tests, as they may be slower)
+3. **Vitest configuration**: Use `singleWorker: true` for faster tests with small test suites
+4. **Database naming**: Fixed to use `bookmark-app` (from wrangler.toml) instead of incorrect `bookmark-db`
+
+### Issues Encountered
+
+- ❌ Initial attempt to use `env.DB.exec()` with multi-line SQL failed ("incomplete input" error)
+- ❌ Using `beforeAll()` with `DB.prepare().run()` worked but wasn't the recommended pattern
+- 💡 **Solution**: Research revealed official Cloudflare pattern with `readD1Migrations()` + setup files
+- ❌ ESLint warning about module type when running hooks
+- 💡 **Solution**: Added `"type": "module"` to package.json
+- ❌ `D1Migration` type caused ESLint no-undef error
+- 💡 **Solution**: Added `eslint-disable-next-line no-undef` comment
+
+### Commits Made
+
+8. `047f335` - chore: add pre-commit hooks and NPM scripts
+9. `ad5cf96` - fix: add type module to package.json to eliminate ESLint warning
+10. `40db401` - feat: implement official Cloudflare D1 testing pattern with enhanced test coverage
+11. (pending) - test: add 404 test for unknown routes
+
+### What's Next
+
+- Add 404 test for unknown routes
+- Update WORKLOG.md (this file)
+- Begin Hono migration with confidence that tests will catch regressions
+
+---
+
 ## 2026-01-24 - Initial Planning and Documentation Setup
 
 ### Objectives
@@ -10,7 +84,7 @@
 
 ### Planned Changes (In Progress)
 
-#### Phase 1: Safety & Infrastructure
+#### Phase 1: Safety & Infrastructure ✅ COMPLETE
 
 - [x] Create AGENTS.md and WORKLOG.md documentation
 - [x] Fix vitest.config.mts (wrangler.jsonc → wrangler.toml)
@@ -19,13 +93,16 @@
 - [x] Add ESLint configuration
 - [x] Create D1 migration file and docs
 - [x] Update API tests to match actual endpoints
+- [x] Add pre-commit hooks (Husky) with lint/typecheck/format checks
+- [x] Add comprehensive NPM scripts (typecheck, format, test:watch, etc.)
+- [x] Implement official D1 testing pattern with readD1Migrations()
+- [x] Enhanced test coverage (integration tests, tag filtering, 404)
 
-#### Phase 2: Hono Migration
+#### Phase 2: Hono Migration (IN PROGRESS)
 
 - [ ] Migrate API to Hono framework
 - [ ] Update frontend to use shared types
 - [ ] Add environment variable support for API URL
-- [ ] Add npm scripts (typecheck, lint, etc.)
 
 #### Phase 3: Enhancements
 
@@ -107,7 +184,7 @@
 4. `045f93c` - refactor: convert UI components from jsx to tsx
 5. `0cef33c` - feat: add ESLint with TypeScript and React support
 6. `cd54819` - docs: add database schema migration and documentation
-7. (pending) - test: update API tests for bookmark endpoints
+7. `c8019f3` - test: update API tests for bookmark endpoints
 
 ### Notes
 
