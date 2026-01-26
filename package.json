@@ -19,8 +19,8 @@
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"db:migrate:local": "wrangler d1 execute bookmark-db --local --file=./migrations/0001_initial_schema.sql",
-		"db:migrate:remote": "wrangler d1 execute bookmark-db --file=./migrations/0001_initial_schema.sql",
+		"db:migrate:local": "wrangler d1 execute bookmark-app --local --file=./migrations/0001_initial_schema.sql",
+		"db:migrate:remote": "wrangler d1 execute bookmark-app --file=./migrations/0001_initial_schema.sql",
 		"prepare": "husky"
 	},
 	"devDependencies": {
