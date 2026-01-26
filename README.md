@@ -1,9 +1,29 @@
-# Bookmark-App
+# Bookmark App
 
-This project is a small bookmarking app built by Alex Viana to explore Cloudflare and frontend tools. The app has 3 parts:
+A learning project by Alex Viana exploring Cloudflare's edge platform and modern TypeScript development.
 
-- **Database:** SQLite hosted on [Cloudflare D1](https://developers.cloudflare.com/d1/)
-- **API:** TypeScript running on [Cloudflare Workers](https://developers.cloudflare.com/workers/)
-- **Frontend:** TypeScript, Vite, and Shadcn running on [Cloudflare Pages](https://developers.cloudflare.com/pages/)
+## Stack
 
-The project is build as a monolith (calling it a monorepo would be too generous). The code is largely vibe-coded with OpenAI ChatGPT-4o but with an increasing number of human contributions as I learn more TypeScript.
+- **Database**: Cloudflare D1 (SQLite)
+- **API**: Hono on Cloudflare Workers
+- **Frontend**: React + Vite + Shadcn UI on Cloudflare Pages
+- **Testing**: Vitest with official D1 testing pattern
+- **Shared Types**: Workspace-based TypeScript types
+
+## Development
+
+```bash
+npm install
+npm run db:migrate:local   # Setup local D1 database
+npm run dev                # Start API dev server
+npm test                   # Run tests
+```
+
+## Quality Gates
+
+- Pre-commit hooks (lint, typecheck, format)
+- TypeScript strict mode
+- ESLint + Prettier
+- Comprehensive test coverage
+
+See [AGENTS.md](./AGENTS.md) for detailed documentation and [WORKLOG.md](./WORKLOG.md) for development history.
