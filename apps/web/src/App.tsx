@@ -7,14 +7,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Footer from '@/components/Footer';
-
-type Bookmark = {
-	id: string;
-	url: string;
-	title: string;
-	tags: string; // comma-separated
-	created_at: string;
-};
+import type { Bookmark } from '@bookmark-app/shared';
 
 export default function App() {
 	const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
