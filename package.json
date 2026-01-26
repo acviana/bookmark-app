@@ -10,9 +10,17 @@
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
 		"test": "vitest",
+		"test:watch": "vitest --watch",
+		"test:coverage": "vitest --coverage",
 		"cf-typegen": "wrangler types",
 		"lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-		"lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix"
+		"lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+		"typecheck": "tsc --noEmit",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"db:migrate:local": "wrangler d1 execute bookmark-db --local --file=./migrations/0001_initial_schema.sql",
+		"db:migrate:remote": "wrangler d1 execute bookmark-db --file=./migrations/0001_initial_schema.sql",
+		"prepare": "husky"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
@@ -23,6 +31,8 @@
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^7.0.1",
 		"globals": "^17.1.0",
+		"husky": "^9.1.7",
+		"prettier": "^3.8.1",
 		"typescript": "^5.5.2",
 		"vitest": "~3.2.0",
 		"wrangler": "^4.26.0"

@@ -36,13 +36,11 @@
 
 		/* Skip type checking all .d.ts files. */
 		"skipLibCheck": true,
-		"types": [
-			"./worker-configuration.d.ts"
-		],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@bookmark-app/shared": ["apps/shared/src/types.ts"]
+		"types": ["./worker-configuration.d.ts"],
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"],
+			"@bookmark-app/shared": ["apps/shared/src/types.ts"]
 		}
 	},
 	"exclude": ["test"],

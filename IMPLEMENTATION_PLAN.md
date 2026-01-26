@@ -48,10 +48,12 @@ CREATE TABLE bookmarks (
 **Purpose**: Help AI agents understand this codebase and work effectively on it
 
 **Content Structure**:
-```markdown
+
+````markdown
 # AI Agent Playbook - Bookmark App
 
 ## Project Overview
+
 - **Type**: Bookmarking application (monorepo/monolith)
 - **Stack**: Cloudflare Workers + D1 + React + TypeScript
 - **Structure**: Workspace-based with apps/ directory
@@ -59,11 +61,13 @@ CREATE TABLE bookmarks (
 ## Codebase Structure
 
 ### Workspaces
+
 - `apps/api/` - Hono backend (Cloudflare Workers)
 - `apps/web/` - React frontend (Vite + Shadcn UI)
 - `apps/shared/` - Shared TypeScript types
 
 ### Key Directories
+
 - `migrations/` - D1 database schema and migrations
 - `test/` - Vitest tests for API
 - `apps/web/src/components/ui/` - Shadcn UI components
@@ -71,38 +75,45 @@ CREATE TABLE bookmarks (
 ## Technology Stack
 
 ### Backend (apps/api)
+
 - **Runtime**: Cloudflare Workers
 - **Framework**: Hono (web framework)
 - **Database**: Cloudflare D1 (SQLite)
 - **Testing**: Vitest with @cloudflare/vitest-pool-workers
 
 ### Frontend (apps/web)
+
 - **Framework**: React 18 + TypeScript
 - **Build**: Vite
 - **UI**: Shadcn UI + Tailwind CSS + Radix UI primitives
 - **Styling**: Tailwind CSS with tailwindcss-animate
 
 ### Shared
+
 - **Types**: Centralized in apps/shared for API/web consistency
 
 ## Code Conventions
 
 ### TypeScript
+
 - **Strict mode enabled** (tsconfig.json)
 - **Path aliases**: `@/` maps to `src/` in web app
 - **Shared types**: Import from `@bookmark-app/shared`
 
 ### Formatting
+
 - **Tool**: Prettier
 - **Config**: .prettierrc (tabs, single quotes, 140 char width)
 - **Run**: `npm run format`
 
 ### Linting
+
 - **Tool**: ESLint with TypeScript + React plugins
 - **Preset**: @typescript-eslint/recommended
 - **Run**: `npm run lint` or `npm run lint:fix`
 
 ### Commits
+
 - **Style**: Conventional commits (feat:, fix:, refactor:, etc.)
 - **Atomicity**: One logical change per commit
 - **Process**: Show changes → get approval → commit
@@ -110,6 +121,7 @@ CREATE TABLE bookmarks (
 ## Database Schema
 
 ### Table: bookmarks
+
 ```sql
 CREATE TABLE bookmarks (
     id TEXT PRIMARY KEY,
@@ -119,18 +131,22 @@ CREATE TABLE bookmarks (
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 ```
+````
 
 ### Indexes
+
 - `idx_bookmarks_tags` - For tag filtering
 - `idx_bookmarks_created_at` - For date sorting
 
 ## API Endpoints
 
 ### Backend API (apps/api)
+
 - **Base URL Dev**: http://localhost:8787
 - **Base URL Prod**: https://bookmark-api.alexcostaviana.workers.dev
 
 #### Endpoints
+
 - `POST /bookmarks` - Create bookmark
   - Body: `{ url, title, tags: string[] }`
   - Returns: `{ success: boolean, id: string }`
@@ -138,6 +154,7 @@ CREATE TABLE bookmarks (
 - `GET /bookmarks?tag=X` - Filter by tag
 
 #### Middleware Stack
+
 1. Logger (request logging)
 2. Error handler (catches unhandled errors)
 3. CORS (allow all origins)
@@ -145,18 +162,21 @@ CREATE TABLE bookmarks (
 ## Development Workflow
 
 ### Setup
+
 ```bash
 npm install
 npm run db:migrate:local  # Set up local D1
 ```
 
 ### Running
+
 ```bash
 npm run dev              # Start API dev server
 cd apps/web && npm run dev  # Start frontend (separate terminal)
 ```
 
 ### Testing
+
 ```bash
 npm test                 # Run all tests
 npm run test:coverage    # With coverage
@@ -165,6 +185,7 @@ npm run lint             # Linting
 ```
 
 ### Database Operations
+
 ```bash
 npm run db:migrate:local   # Local migration
 npm run db:migrate:remote  # Production migration (careful!)
@@ -173,23 +194,27 @@ npm run db:migrate:remote  # Production migration (careful!)
 ## Common Tasks
 
 ### Adding a New API Endpoint
+
 1. Update `apps/api/src/index.ts`
 2. Add types to `apps/shared/src/types.ts` if needed
 3. Add tests in `test/index.spec.ts`
 4. Run `npm test` to verify
 
 ### Adding a New React Component
+
 1. Create in `apps/web/src/components/`
 2. Use TypeScript (.tsx extension)
 3. Import UI components from `@/components/ui/`
 4. Follow existing patterns (see App.tsx)
 
 ### Modifying Shared Types
+
 1. Edit `apps/shared/src/types.ts`
 2. Types are automatically available in API and web via imports
 3. Run `npm run typecheck` to verify no breaks
 
 ### Database Schema Changes
+
 1. Create new migration file: `migrations/XXXX_description.sql`
 2. Update `apps/shared/src/types.ts` to match
 3. Run migration locally first
@@ -198,41 +223,49 @@ npm run db:migrate:remote  # Production migration (careful!)
 ## Troubleshooting
 
 ### Type errors in UI components
+
 - Ensure components use `.tsx` extension
 - Check `@/` path alias is configured in vite.config.ts
 
 ### Import errors for shared types
+
 - Verify `apps/shared` is in root package.json workspaces
 - Check tsconfig.json has path mapping for `@bookmark-app/shared`
 
 ### D1 database issues
+
 - Local: Ensure wrangler.toml points to correct database
 - Remote: Verify database_id matches in wrangler.toml
 
 ### CORS errors
+
 - Check CORS middleware is enabled in apps/api/src/index.ts
 - Verify API URL in frontend matches (check .env files)
 
 ## Architecture Decisions
 
 ### Why Hono?
+
 - Lightweight, fast, TypeScript-first
 - Excellent Cloudflare Workers support
 - Clean middleware system
 - Better DX than raw Workers API
 
 ### Why Workspace-based Shared Types?
+
 - Single source of truth
 - Type safety between API and frontend
 - Scales better than duplication
 - Follows monorepo best practices
 
 ### Why D1?
+
 - Integrated with Cloudflare Workers (low latency)
 - SQLite-compatible (familiar, powerful)
 - Free tier suitable for learning projects
 
 ### Why Shadcn UI?
+
 - Copy-paste component model (full control)
 - Built on Radix UI (accessible, unstyled)
 - Tailwind-based (customizable)
@@ -240,6 +273,7 @@ npm run db:migrate:remote  # Production migration (careful!)
 ## Project Context
 
 This is a **learning project** by Alex Viana to explore:
+
 - Cloudflare platform (Workers, D1, Pages)
 - Modern TypeScript patterns
 - React + Vite ecosystem
@@ -250,16 +284,19 @@ Code quality is prioritized over features. The goal is production-quality code, 
 ## Working with This Repo
 
 ### Before Making Changes
+
 1. Read WORKLOG.md to see what's been tried
 2. Run `npm run typecheck` and `npm test` to verify current state
 3. Create a plan and get user approval
 
 ### During Changes
+
 1. Update WORKLOG.md as you work
 2. Fix linting/type errors immediately
 3. Show diff before committing
 
 ### After Changes
+
 1. Run full verification (`typecheck`, `lint`, `test`)
 2. Update WORKLOG.md with results
 3. Request commit approval with clear message
@@ -271,7 +308,8 @@ Code quality is prioritized over features. The goal is production-quality code, 
 - [Cloudflare D1 Docs](https://developers.cloudflare.com/d1/)
 - [Shadcn UI](https://ui.shadcn.com)
 - [Vitest](https://vitest.dev)
-```
+
+````
 
 ---
 
@@ -343,19 +381,25 @@ Code quality is prioritized over features. The goal is production-quality code, 
 - Mark tasks complete with ✅ when done
 
 **Format for Updates**:
-```
+````
+
 ## YYYY-MM-DD - Brief Session Description
 
 ### What Was Done
+
 - ✅ Completed task descriptions
 
 ### Issues Encountered
+
 - ❌ Problem description
 - 💡 Solution or workaround
 
 ### What's Next
+
 - Remaining tasks
+
 ```
+
 ```
 
 ---
@@ -363,7 +407,9 @@ Code quality is prioritized over features. The goal is production-quality code, 
 ## Implementation Tasks & Commits
 
 ### Commit 1: Documentation Foundation
+
 **Files**:
+
 - `AGENTS.md` (new)
 - `WORKLOG.md` (new)
 
@@ -374,7 +420,9 @@ Code quality is prioritized over features. The goal is production-quality code, 
 ---
 
 ### Commit 2: Fix Vitest Configuration
+
 **Files**:
+
 - `vitest.config.mts` (modify line 7)
 
 **Change**: `configPath: './wrangler.jsonc'` → `configPath: './wrangler.toml'`
@@ -386,7 +434,9 @@ Code quality is prioritized over features. The goal is production-quality code, 
 ---
 
 ### Commit 3: Create Shared Types Workspace
+
 **Files**:
+
 - `apps/shared/package.json` (new)
 - `apps/shared/tsconfig.json` (new)
 - `apps/shared/src/types.ts` (new)
@@ -396,24 +446,25 @@ Code quality is prioritized over features. The goal is production-quality code, 
 **Commit message**: `feat: add shared types workspace for API/web consistency`
 
 **Types to include**:
+
 ```typescript
 export interface Bookmark {
-  id: string;
-  url: string;
-  title: string;
-  tags: string;
-  created_at: string;
+	id: string;
+	url: string;
+	title: string;
+	tags: string;
+	created_at: string;
 }
 
 export interface CreateBookmarkRequest {
-  url: string;
-  title: string;
-  tags?: string[];
+	url: string;
+	title: string;
+	tags?: string[];
 }
 
 export interface CreateBookmarkResponse {
-  success: boolean;
-  id: string;
+	success: boolean;
+	id: string;
 }
 ```
 
@@ -422,7 +473,9 @@ export interface CreateBookmarkResponse {
 ---
 
 ### Commit 4: Convert UI Components to TypeScript
+
 **Files** (6 renames):
+
 - `apps/web/src/components/ui/badge.jsx` → `.tsx`
 - `apps/web/src/components/ui/button.jsx` → `.tsx`
 - `apps/web/src/components/ui/dialog.jsx` → `.tsx`
@@ -435,6 +488,7 @@ export interface CreateBookmarkResponse {
 **Approach**: Add minimal TypeScript typing (permissive with `any` where needed)
 
 **Example for badge.tsx**:
+
 ```typescript
 interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'secondary' | 'destructive' | 'outline';
@@ -450,12 +504,15 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 ---
 
 ### Commit 5: Add ESLint Configuration
+
 **Files**:
+
 - `.eslintrc.json` (new)
 - `.eslintignore` (new)
 - `package.json` (modify - add dev dependencies)
 
 **Dependencies to install**:
+
 ```bash
 npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
 npm install -D eslint-plugin-react eslint-plugin-react-hooks
@@ -464,41 +521,38 @@ npm install -D eslint-plugin-react eslint-plugin-react-hooks
 **Commit message**: `feat: add ESLint with TypeScript and React support`
 
 **ESLint config**:
+
 ```json
 {
-  "root": true,
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2021,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
-  "plugins": ["@typescript-eslint", "react", "react-hooks"],
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "node": true
-  },
-  "rules": {
-    "react/react-in-jsx-scope": "off"
-  }
+	"root": true,
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:react/recommended", "plugin:react-hooks/recommended"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 2021,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"plugins": ["@typescript-eslint", "react", "react-hooks"],
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"node": true
+	},
+	"rules": {
+		"react/react-in-jsx-scope": "off"
+	}
 }
 ```
 
 **.eslintignore**:
+
 ```
 node_modules
 dist
@@ -513,13 +567,16 @@ worker-configuration.d.ts
 ---
 
 ### Commit 6: Add Database Migration and Documentation
+
 **Files**:
+
 - `migrations/0001_initial_schema.sql` (new)
 - `migrations/README.md` (new)
 
 **Commit message**: `docs: add database schema migration and documentation`
 
 **Migration file content**:
+
 ```sql
 -- Migration: Initial bookmark schema
 -- Created: 2026-01-22
@@ -541,26 +598,32 @@ CREATE INDEX IF NOT EXISTS idx_bookmarks_created_at ON bookmarks(created_at DESC
 ```
 
 **migrations/README.md**:
-```markdown
+
+````markdown
 # Database Migrations
 
 ## Schema Overview
+
 - **Database**: Cloudflare D1 (SQLite)
 - **Current Version**: 0001
 
 ## Running Migrations
 
 ### Local Development
+
 ```bash
 npx wrangler d1 execute bookmark-app --local --file=./migrations/0001_initial_schema.sql
 ```
+````
 
 ### Production
+
 ```bash
 npx wrangler d1 execute bookmark-app --remote --file=./migrations/0001_initial_schema.sql
 ```
 
 **NOTE**: The production database already has this schema. This migration is for:
+
 - Setting up local development databases
 - Documentation of the schema
 - Reproducibility for new developers
@@ -575,7 +638,8 @@ See [0001_initial_schema.sql](./0001_initial_schema.sql) for current schema.
 2. Update this README with the new version
 3. Test locally first: `npm run db:migrate:local`
 4. Update production only when ready: `npm run db:migrate:remote`
-```
+
+````
 
 **Note**: This is for documentation and local dev setup, not to be run on existing production DB
 
@@ -606,17 +670,17 @@ describe('Bookmark API', () => {
         title: 'Example',
         tags: ['test', 'demo']
       };
-      
+
       const request = new IncomingRequest('http://localhost/bookmarks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-      
+
       const ctx = createExecutionContext();
       const response = await worker.fetch(request, env, ctx);
       await waitOnExecutionContext(ctx);
-      
+
       expect(response.status).toBe(200);
       const data: CreateBookmarkResponse = await response.json();
       expect(data.success).toBe(true);
@@ -630,7 +694,7 @@ describe('Bookmark API', () => {
       const ctx = createExecutionContext();
       const response = await worker.fetch(request, env, ctx);
       await waitOnExecutionContext(ctx);
-      
+
       expect(response.status).toBe(200);
       const data: Bookmark[] = await response.json();
       expect(Array.isArray(data)).toBe(true);
@@ -641,7 +705,7 @@ describe('Bookmark API', () => {
       const ctx = createExecutionContext();
       const response = await worker.fetch(request, env, ctx);
       await waitOnExecutionContext(ctx);
-      
+
       expect(response.status).toBe(200);
       const data: Bookmark[] = await response.json();
       expect(Array.isArray(data)).toBe(true);
@@ -656,13 +720,13 @@ describe('Bookmark API', () => {
       const ctx = createExecutionContext();
       const response = await worker.fetch(request, env, ctx);
       await waitOnExecutionContext(ctx);
-      
+
       expect(response.status).toBe(204);
       expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
     });
   });
 });
-```
+````
 
 **Note**: Tests will initially fail against current API, will pass after Hono migration
 
@@ -671,11 +735,14 @@ describe('Bookmark API', () => {
 ---
 
 ### Commit 8: Migrate API to Hono
+
 **Files**:
+
 - `apps/api/src/index.ts` (complete rewrite)
 - `package.json` (add hono dependency)
 
 **Dependencies**:
+
 ```bash
 npm install hono
 ```
@@ -683,6 +750,7 @@ npm install hono
 **Commit message**: `feat: migrate API to Hono framework`
 
 **New API structure**:
+
 ```typescript
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
@@ -690,7 +758,7 @@ import { v4 as uuid } from 'uuid';
 import type { Bookmark, CreateBookmarkRequest, CreateBookmarkResponse } from '@bookmark-app/shared';
 
 type Bindings = {
-  DB: D1Database;
+	DB: D1Database;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -700,38 +768,38 @@ app.use('/*', cors());
 
 // POST /bookmarks - Create a new bookmark
 app.post('/bookmarks', async (c) => {
-  const body: CreateBookmarkRequest = await c.req.json();
-  const id = uuid();
-  
-  await c.env.DB.prepare(
-    'INSERT INTO bookmarks (id, url, title, tags) VALUES (?, ?, ?, ?)'
-  ).bind(id, body.url, body.title, body.tags?.join(',')).run();
-  
-  return c.json<CreateBookmarkResponse>({ success: true, id });
+	const body: CreateBookmarkRequest = await c.req.json();
+	const id = uuid();
+
+	await c.env.DB.prepare('INSERT INTO bookmarks (id, url, title, tags) VALUES (?, ?, ?, ?)')
+		.bind(id, body.url, body.title, body.tags?.join(','))
+		.run();
+
+	return c.json<CreateBookmarkResponse>({ success: true, id });
 });
 
 // GET /bookmarks - Fetch all bookmarks or filter by tag
 app.get('/bookmarks', async (c) => {
-  const tagFilter = c.req.query('tag');
-  
-  const stmt = tagFilter
-    ? c.env.DB.prepare("SELECT * FROM bookmarks WHERE tags LIKE ? ORDER BY created_at DESC")
-        .bind(`%${tagFilter}%`)
-    : c.env.DB.prepare("SELECT * FROM bookmarks ORDER BY created_at DESC");
-  
-  const { results } = await stmt.all();
-  return c.json<Bookmark[]>(results as Bookmark[]);
+	const tagFilter = c.req.query('tag');
+
+	const stmt = tagFilter
+		? c.env.DB.prepare('SELECT * FROM bookmarks WHERE tags LIKE ? ORDER BY created_at DESC').bind(`%${tagFilter}%`)
+		: c.env.DB.prepare('SELECT * FROM bookmarks ORDER BY created_at DESC');
+
+	const { results } = await stmt.all();
+	return c.json<Bookmark[]>(results as Bookmark[]);
 });
 
 // 404 handler
 app.notFound((c) => {
-  return c.text('Not Found', 404);
+	return c.text('Not Found', 404);
 });
 
 export default app;
 ```
 
 **Key changes**:
+
 - ✅ Same API interface (backwards compatible)
 - ✅ CORS via middleware
 - ✅ Uses shared types
@@ -743,13 +811,16 @@ export default app;
 ---
 
 ### Commit 9: Update Frontend to Use Shared Types
+
 **Files**:
+
 - `apps/web/src/App.tsx` (modify)
 - `apps/web/package.json` (add dependency if needed)
 
 **Commit message**: `refactor: use shared types in frontend`
 
 **Changes to App.tsx**:
+
 ```typescript
 // Remove lines 28-34 (local Bookmark type definition)
 
@@ -764,7 +835,9 @@ import type { Bookmark, CreateBookmarkRequest } from '@bookmark-app/shared';
 ---
 
 ### Commit 10: Add Environment Variable Support
+
 **Files**:
+
 - `apps/web/.env.example` (new)
 - `apps/web/.env.development` (new)
 - `apps/web/.env.production` (new)
@@ -775,24 +848,28 @@ import type { Bookmark, CreateBookmarkRequest } from '@bookmark-app/shared';
 **Env files**:
 
 `.env.example`:
+
 ```env
 VITE_API_URL=http://localhost:8787
 ```
 
 `.env.development`:
+
 ```env
 VITE_API_URL=http://localhost:8787
 ```
 
 `.env.production`:
+
 ```env
 VITE_API_URL=https://bookmark-api.alexcostaviana.workers.dev
 ```
 
 **App.tsx change**:
+
 ```typescript
 // Before (line 47):
-const api_url = "https://bookmark-api.alexcostaviana.workers.dev/bookmarks";
+const api_url = 'https://bookmark-api.alexcostaviana.workers.dev/bookmarks';
 
 // After:
 const api_url = `${import.meta.env.VITE_API_URL}/bookmarks`;
@@ -803,30 +880,33 @@ const api_url = `${import.meta.env.VITE_API_URL}/bookmarks`;
 ---
 
 ### Commit 11: Add NPM Scripts
+
 **Files**:
+
 - `package.json` (modify scripts section)
 
 **Commit message**: `chore: add typecheck, lint, and database scripts`
 
 **New scripts**:
+
 ```json
 {
-  "scripts": {
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
-    "start": "wrangler dev",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage",
-    "cf-typegen": "wrangler types",
-    "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "db:migrate:local": "wrangler d1 execute bookmark-app --local --file=./migrations/0001_initial_schema.sql",
-    "db:migrate:remote": "wrangler d1 execute bookmark-app --remote --file=./migrations/0001_initial_schema.sql"
-  }
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest",
+		"test:coverage": "vitest --coverage",
+		"cf-typegen": "wrangler types",
+		"typecheck": "tsc --noEmit",
+		"typecheck:watch": "tsc --noEmit --watch",
+		"lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+		"lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"db:migrate:local": "wrangler d1 execute bookmark-app --local --file=./migrations/0001_initial_schema.sql",
+		"db:migrate:remote": "wrangler d1 execute bookmark-app --remote --file=./migrations/0001_initial_schema.sql"
+	}
 }
 ```
 
@@ -835,45 +915,49 @@ const api_url = `${import.meta.env.VITE_API_URL}/bookmarks`;
 ---
 
 ### Commit 12: Add Error Handling Middleware
+
 **Files**:
+
 - `apps/api/src/middleware/errorHandler.ts` (new)
 - `apps/api/src/index.ts` (modify)
 
 **Commit message**: `feat: add error handling middleware to Hono API`
 
 **errorHandler.ts**:
+
 ```typescript
 import type { Context, Next } from 'hono';
 import type { StatusCode } from 'hono/utils/http-status';
 
 export interface ApiError {
-  error: string;
-  message: string;
-  status: number;
+	error: string;
+	message: string;
+	status: number;
 }
 
 export const errorHandler = async (c: Context, next: Next) => {
-  try {
-    await next();
-  } catch (err) {
-    console.error('API Error:', err);
-    
-    const error = err as Error;
-    const status: StatusCode = 500;
-    
-    return c.json<ApiError>(
-      {
-        error: error.name || 'InternalServerError',
-        message: error.message || 'An unexpected error occurred',
-        status,
-      },
-      status
-    );
-  }
+	try {
+		await next();
+	} catch (err) {
+		console.error('API Error:', err);
+
+		const error = err as Error;
+		const status: StatusCode = 500;
+
+		return c.json<ApiError>(
+			{
+				error: error.name || 'InternalServerError',
+				message: error.message || 'An unexpected error occurred',
+				status,
+			},
+			status,
+		);
+	}
 };
 ```
 
 **index.ts update**:
+
 ```typescript
 import { errorHandler } from './middleware/errorHandler';
 
@@ -886,30 +970,34 @@ app.use('/*', errorHandler);
 ---
 
 ### Commit 13: Add Request Logging Middleware
+
 **Files**:
+
 - `apps/api/src/middleware/logger.ts` (new)
 - `apps/api/src/index.ts` (modify)
 
 **Commit message**: `feat: add request logging middleware to Hono API`
 
 **logger.ts**:
+
 ```typescript
 import type { Context, Next } from 'hono';
 
 export const logger = async (c: Context, next: Next) => {
-  const start = Date.now();
-  const { method, url } = c.req;
-  
-  await next();
-  
-  const duration = Date.now() - start;
-  const status = c.res.status;
-  
-  console.log(`[${method}] ${url} - ${status} (${duration}ms)`);
+	const start = Date.now();
+	const { method, url } = c.req;
+
+	await next();
+
+	const duration = Date.now() - start;
+	const status = c.res.status;
+
+	console.log(`[${method}] ${url} - ${status} (${duration}ms)`);
 };
 ```
 
 **index.ts update**:
+
 ```typescript
 import { logger } from './middleware/logger';
 
@@ -918,10 +1006,11 @@ app.use('/*', logger);
 ```
 
 **Middleware order in final index.ts**:
+
 ```typescript
-app.use('/*', logger);        // First - log everything
-app.use('/*', errorHandler);  // Second - catch errors
-app.use('/*', cors());        // Third - handle CORS
+app.use('/*', logger); // First - log everything
+app.use('/*', errorHandler); // Second - catch errors
+app.use('/*', cors()); // Third - handle CORS
 
 // ... then routes
 ```
@@ -931,12 +1020,15 @@ app.use('/*', cors());        // Third - handle CORS
 ---
 
 ### Commit 14: Final Verification and Worklog Update
+
 **Files**:
+
 - `WORKLOG.md` (update)
 
 **Commit message**: `docs: update worklog with implementation results`
 
 **Tasks**:
+
 1. Run `npm install`
 2. Run `npm run typecheck` - verify passes
 3. Run `npm run lint` - verify passes
@@ -947,10 +1039,12 @@ app.use('/*', cors());        // Third - handle CORS
 8. Update WORKLOG.md with results
 
 **WORKLOG.md update template**:
+
 ```markdown
 ## 2026-01-22 - Implementation Complete
 
 ### What Was Done
+
 - ✅ Created AGENTS.md and WORKLOG.md documentation
 - ✅ Fixed vitest.config.mts to reference wrangler.toml
 - ✅ Created apps/shared workspace with shared TypeScript types
@@ -967,9 +1061,11 @@ app.use('/*', cors());        // Third - handle CORS
 - ✅ All tests passing, typecheck clean, lint clean
 
 ### Issues Encountered
+
 - [Document any issues that came up during implementation]
 
 ### Verification Results
+
 - TypeScript: ✅ No errors
 - ESLint: ✅ No errors
 - Tests: ✅ All passing
@@ -977,6 +1073,7 @@ app.use('/*', cors());        // Third - handle CORS
 - Frontend: ✅ Working
 
 ### Next Steps
+
 - Consider adding input validation to API endpoints
 - Consider adding Zod validation in the future
 - Consider tightening TypeScript types in UI components
@@ -992,6 +1089,7 @@ app.use('/*', cors());        // Third - handle CORS
 ### Total Commits: 14 (in logical groupings)
 
 **Commit Sequence**:
+
 1. Documentation foundation (AGENTS.md, WORKLOG.md)
 2. Fix vitest config
 3. Shared types workspace
@@ -1008,10 +1106,13 @@ app.use('/*', cors());        // Third - handle CORS
 14. Final verification + worklog
 
 ### Files Created: ~20+
+
 ### Files Modified: ~15+
+
 ### Dependencies Added: 6
 
 **New Dependencies**:
+
 - `hono` - Web framework
 - `eslint` - Linter
 - `@typescript-eslint/parser` - TypeScript parser for ESLint

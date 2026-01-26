@@ -11,7 +11,6 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-
 import { v4 as uuid } from 'uuid';
 
 export default {
@@ -34,9 +33,9 @@ export default {
 		if (request.method === 'POST' && pathname === '/bookmarks') {
 			const body = await request.json();
 			const id = uuid();
-			await env.DB.prepare(
-				'INSERT INTO bookmarks (id, url, title, tags) VALUES (?, ?, ?, ?)'
-			).bind(id, body.url, body.title, body.tags?.join(',')).run();
+			await env.DB.prepare('INSERT INTO bookmarks (id, url, title, tags) VALUES (?, ?, ?, ?)')
+				.bind(id, body.url, body.title, body.tags?.join(','))
+				.run();
 
 			return new Response(JSON.stringify({ success: true, id }), {
 				headers: {
@@ -49,8 +48,8 @@ export default {
 		if (request.method === 'GET' && pathname === '/bookmarks') {
 			const tagFilter = searchParams.get('tag');
 			const stmt = tagFilter
-				? env.DB.prepare("SELECT * FROM bookmarks WHERE tags LIKE ? ORDER BY created_at DESC").bind(`%${tagFilter}%`)
-				: env.DB.prepare("SELECT * FROM bookmarks ORDER BY created_at DESC");
+				? env.DB.prepare('SELECT * FROM bookmarks WHERE tags LIKE ? ORDER BY created_at DESC').bind(`%${tagFilter}%`)
+				: env.DB.prepare('SELECT * FROM bookmarks ORDER BY created_at DESC');
 
 			const { results } = await stmt.all();
 
@@ -68,4 +67,3 @@ export default {
 		});
 	},
 };
-
