@@ -6,7 +6,8 @@ A learning project by Alex Viana exploring Cloudflare's edge platform and modern
 
 - **Database**: Cloudflare D1 (SQLite)
 - **API**: Hono on Cloudflare Workers
-- **Frontend**: React + Vite + Shadcn UI on Cloudflare Pages
+- **Frontend**: React + Vite 7 + Shadcn UI
+- **Deployment**: Workers Static Assets (single Worker serves both API and frontend)
 - **Testing**: Vitest with official D1 testing pattern
 - **Shared Types**: Workspace-based TypeScript types
 
@@ -14,9 +15,10 @@ A learning project by Alex Viana exploring Cloudflare's edge platform and modern
 
 ```bash
 npm install
-npm run db:migrate:local   # Setup local D1 database
-npm run dev                # Start API dev server
-npm test                   # Run tests
+npm run db:migrate:local      # Setup local D1 database
+cd apps/web && npm run dev    # Start dev server (Vite with Workers runtime)
+npm test                      # Run tests
+npm run deploy                # Deploy to production
 ```
 
 ## Quality Gates

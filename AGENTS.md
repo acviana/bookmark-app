@@ -32,9 +32,15 @@
 ### Frontend (apps/web)
 
 - **Framework**: React 18 + TypeScript
-- **Build**: Vite
+- **Build**: Vite 7 + @cloudflare/vite-plugin
 - **UI**: Shadcn UI + Tailwind CSS + Radix UI primitives
 - **Styling**: Tailwind CSS with tailwindcss-animate
+
+### Deployment
+
+- **Platform**: Cloudflare Workers with Workers Static Assets
+- **Architecture**: Single Worker serves both API and static frontend
+- **Routing**: `/api/*` → Hono handler, all other paths → static assets or SPA fallback
 
 ### Shared
 
@@ -89,16 +95,23 @@ CREATE TABLE bookmarks (
 
 ### Backend API (apps/api)
 
-- **Base URL Dev**: http://localhost:8787
-- **Base URL Prod**: https://bookmark-api.alexcostaviana.workers.dev
+- **Base URL Dev**: http://localhost:5173 (Vite dev) or http://localhost:8787 (unified dev)
+- **Base URL Prod**: https://bookmark-app.alexcostaviana.workers.dev
 
 #### Endpoints
 
-- `POST /bookmarks` - Create bookmark
+- `POST /api/bookmarks` - Create bookmark
   - Body: `{ url, title, tags: string[] }`
   - Returns: `{ success: boolean, id: string }`
-- `GET /bookmarks` - List all bookmarks (DESC by created_at)
-- `GET /bookmarks?tag=X` - Filter by tag
+- `GET /api/bookmarks` - List all bookmarks (DESC by created_at)
+- `GET /api/bookmarks?tag=X` - Filter by tag
+
+#### Routing Logic (Production)
+
+- `/api/*` → Hono handler (billable Worker invocations)
+- `/assets/*` → Static files (free, served from edge)
+- `/` → index.html (free, SPA entry point)
+- Unknown routes → SPA fallback to index.html (free)
 
 #### Middleware Stack
 
@@ -115,11 +128,25 @@ npm install
 npm run db:migrate:local  # Set up local D1
 ```
 
-### Running
+### Running (Two Options)
+
+**Option A: Vite dev server with Workers runtime (Recommended)**
 
 ```bash
-npm run dev              # Start API dev server
-cd apps/web && npm run dev  # Start frontend (separate terminal)
+cd apps/web && npm run dev
+# Frontend at http://localhost:5173
+# API calls proxied to /api/* routes via Cloudflare Vite plugin
+# Hot reload, fast refresh, full Workers runtime
+```
+
+**Option B: Production-like testing**
+
+```bash
+npm run dev:unified
+# Build frontend + start Worker dev server
+# Both API and frontend at http://localhost:8787
+# Tests actual Workers Static Assets behavior
+# Slower (requires rebuild for frontend changes)
 ```
 
 ### Testing
@@ -136,6 +163,14 @@ npm run lint             # Linting
 ```bash
 npm run db:migrate:local   # Local migration
 npm run db:migrate:remote  # Production migration (careful!)
+```
+
+### Deployment
+
+```bash
+npm run build:web          # Build frontend only
+npm run deploy             # Build frontend + deploy Worker
+# Deploys to: https://bookmark-app.alexcostaviana.workers.dev
 ```
 
 ## Common Tasks

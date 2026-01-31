@@ -1,5 +1,114 @@
 # Development Worklog
 
+## 2026-01-31 - Workers Static Assets Migration
+
+### Objectives
+
+- Migrate from separate Cloudflare Pages (frontend) + Workers (API) to unified Workers Static Assets
+- Upgrade to Vite 7 to support Cloudflare Vite plugin
+- Implement single-Worker deployment serving both API and frontend
+
+### What Was Done
+
+- ✅ **Upgraded Vite from v4 to v7**
+  - Required for `@cloudflare/vite-plugin` compatibility
+  - Updated `apps/web/package.json` to vite@^7.3.1
+  - Updated all Vite-related dependencies (plugin-react@^4.3.5)
+  - Fixed security vulnerability in glob package
+- ✅ **Installed Cloudflare Vite plugin**
+  - Added `@cloudflare/vite-plugin@^1.5.3` to apps/web
+  - Renamed `apps/web/vite.config.ts` → `vite.config.mts` (ESM requirement)
+  - Configured cloudflare() plugin with path to `../../wrangler.toml`
+  - Enables Workers runtime in Vite dev server
+- ✅ **Configured Workers Static Assets in wrangler.toml**
+  - Renamed worker from `bookmark-api` to `bookmark-app`
+  - Added `[assets]` block:
+    - `directory = "./apps/web/dist"` - Frontend build output
+    - `binding = "ASSETS"` - Binding name for Worker code
+    - `not_found_handling = "single-page-application"` - SPA fallback
+    - `run_worker_first = ["/api", "/api/*"]` - API routes bypass assets
+- ✅ **Updated Hono API for static assets**
+  - Added `ASSETS: Fetcher` to Bindings type in `apps/api/src/index.ts`
+  - Renamed all routes with `/api/` prefix:
+    - `POST /bookmarks` → `POST /api/bookmarks`
+    - `GET /bookmarks` → `GET /api/bookmarks`
+  - Added catch-all route: `app.get('*', (c) => c.env.ASSETS.fetch(c.req.raw))`
+  - Removed `app.notFound()` handler (assets handle 404s now)
+- ✅ **Updated frontend for unified deployment**
+  - Changed API URL in `apps/web/src/App.tsx`:
+    - From: `https://bookmark-api.alexcostaviana.workers.dev/bookmarks`
+    - To: `/api/bookmarks` (relative path)
+  - Frontend now calls same-origin API
+- ✅ **Added build and deployment scripts**
+  - `npm run build:web` - Build frontend only
+  - `npm run deploy` - Build frontend + deploy Worker
+  - `npm run dev:unified` - Test production build locally with wrangler dev
+- ✅ **Updated tests for new routing**
+  - Added `ASSETS: Fetcher` binding to `test/env.d.ts`
+  - Updated all test URLs from `/bookmarks` to `/api/bookmarks`
+  - Removed 404 test (unknown routes now serve SPA with 200, not 404)
+  - All 4 tests passing (was 5 tests, removed 1)
+- ✅ **Deployed to production**
+  - Deployed Worker with static assets successfully
+  - New URL: https://bookmark-app.alexcostaviana.workers.dev
+  - Verified frontend (200 HTML) and API (200 JSON) both working
+  - Total upload: 66.08 KiB / gzip: 16.35 KiB
+  - 9 static assets uploaded
+
+### Decisions Made
+
+1. **Monorepo config approach**: Use relative path `../../wrangler.toml` in vite.config.mts (standard for single-Worker monorepos)
+2. **Worker naming**: Renamed to `bookmark-app` (was `bookmark-api`) to reflect unified nature
+3. **API route prefix**: Added `/api/` prefix to all endpoints for clear separation
+4. **Dev workflow**: Document both Vite dev (with Workers runtime) and unified dev options
+5. **Vite config format**: Use `.mts` extension (ESM requirement for Cloudflare plugin)
+6. **404 handling**: Remove 404 test - SPAs return 200 with index.html for unknown routes (expected behavior)
+
+### Architecture Changes
+
+**Before**:
+
+- Separate deployments: Cloudflare Pages (frontend) + Workers (API)
+- Frontend at: `https://bookmark-app.pages.dev`
+- API at: `https://bookmark-api.alexcostaviana.workers.dev`
+- CORS required between deployments
+- Two separate build/deploy processes
+
+**After**:
+
+- Single Worker deployment with Workers Static Assets
+- Both frontend and API at: `https://bookmark-app.alexcostaviana.workers.dev`
+- No CORS needed (same origin)
+- Single build/deploy process
+- Routing logic:
+  - `/api/*` → Hono handler (billable Worker invocations)
+  - `/assets/*` → Static files (free, served from edge)
+  - `/` → index.html (free)
+  - Unknown routes → SPA fallback to index.html (free)
+
+### Issues Encountered
+
+- ❌ Vite config with `.ts` extension caused ESM errors with Cloudflare plugin
+- 💡 **Solution**: Renamed to `.mts` extension (ESM requirement)
+- ❌ Security vulnerability in glob package (apps/web/package.json)
+- 💡 **Solution**: Updated to glob@^11.0.1
+- ⚠️ Browserslist data 6 months old warning
+- 💡 **Note**: Cosmetic warning, can be fixed with `npx update-browserslist-db@latest`
+
+### Commits Made
+
+13. `2b0fef2` - feat: migrate to Workers Static Assets with Vite 7 and Cloudflare plugin
+
+### What's Next
+
+- Monitor deployment for 1-2 days
+- Update documentation (AGENTS.md, README.md) with new workflows
+- Consider disabling old Cloudflare Pages deployment
+- Consider adding error handling middleware
+- Consider adding request logging middleware
+
+---
+
 ## 2026-01-25 - Pre-commit Hooks and D1 Testing Setup
 
 ### Objectives
