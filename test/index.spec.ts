@@ -15,7 +15,7 @@ describe('Bookmark API', () => {
 				tags: ['test', 'example'],
 			};
 
-			const request = new IncomingRequest('http://localhost/bookmarks', {
+			const request = new IncomingRequest('http://localhost/api/bookmarks', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(body),
@@ -41,7 +41,7 @@ describe('Bookmark API', () => {
 				tags: ['integration', 'test'],
 			};
 
-			const postRequest = new IncomingRequest('http://localhost/bookmarks', {
+			const postRequest = new IncomingRequest('http://localhost/api/bookmarks', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(body),
@@ -55,7 +55,7 @@ describe('Bookmark API', () => {
 			expect(createData.success).toBe(true);
 
 			// Fetch all bookmarks
-			const getRequest = new IncomingRequest('http://localhost/bookmarks');
+			const getRequest = new IncomingRequest('http://localhost/api/bookmarks');
 			const getCtx = createExecutionContext();
 			const getResponse = await worker.fetch(getRequest, env, getCtx);
 			await waitOnExecutionContext(getCtx);
@@ -74,7 +74,7 @@ describe('Bookmark API', () => {
 
 	describe('GET /bookmarks', () => {
 		it('fetches all bookmarks', async () => {
-			const request = new IncomingRequest('http://localhost/bookmarks');
+			const request = new IncomingRequest('http://localhost/api/bookmarks');
 			const ctx = createExecutionContext();
 			const response = await worker.fetch(request, env, ctx);
 			await waitOnExecutionContext(ctx);
@@ -92,7 +92,7 @@ describe('Bookmark API', () => {
 				tags: ['filtered', 'unique-tag-123'],
 			};
 
-			const postRequest = new IncomingRequest('http://localhost/bookmarks', {
+			const postRequest = new IncomingRequest('http://localhost/api/bookmarks', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(body),
@@ -103,7 +103,7 @@ describe('Bookmark API', () => {
 			await waitOnExecutionContext(postCtx);
 
 			// Filter by the unique tag
-			const getRequest = new IncomingRequest('http://localhost/bookmarks?tag=unique-tag-123');
+			const getRequest = new IncomingRequest('http://localhost/api/bookmarks?tag=unique-tag-123');
 			const getCtx = createExecutionContext();
 			const getResponse = await worker.fetch(getRequest, env, getCtx);
 			await waitOnExecutionContext(getCtx);
@@ -116,18 +116,6 @@ describe('Bookmark API', () => {
 			for (const bookmark of bookmarks) {
 				expect(bookmark.tags).toContain('unique-tag-123');
 			}
-		});
-	});
-
-	describe('Error Handling', () => {
-		it('returns 404 for unknown routes', async () => {
-			const request = new IncomingRequest('http://localhost/unknown-route');
-			const ctx = createExecutionContext();
-			const response = await worker.fetch(request, env, ctx);
-			await waitOnExecutionContext(ctx);
-
-			expect(response.status).toBe(404);
-			expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
 		});
 	});
 });

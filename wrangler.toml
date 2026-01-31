@@ -1,4 +1,4 @@
-name = "bookmark-api"
+name = "bookmark-app"
 main = "apps/api/src/index.ts"
 compatibility_date = "2025-07-26"
 
@@ -9,6 +9,12 @@ enabled = true
 binding = "DB"
 database_name = "bookmark-app"
 database_id = "b79c0f11-bcd7-4a04-bae8-63a301bf1a61"
+
+[assets]
+directory = "./apps/web/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api", "/api/*"]
 
 # Optional Smart Placement
 # [placement]

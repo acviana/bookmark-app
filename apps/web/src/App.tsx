@@ -20,7 +20,7 @@ export default function App() {
 
 	const [dialogOpen, setDialogOpen] = useState(false);
 
-	const api_url = 'https://bookmark-api.alexcostaviana.workers.dev/bookmarks';
+	const api_url = '/api/bookmarks';
 
 	const fetchBookmarks = useCallback(() => {
 		setLoading(true);

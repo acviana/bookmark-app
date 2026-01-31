@@ -6,6 +6,8 @@ import type { Bookmark, CreateBookmarkRequest, CreateBookmarkResponse } from '@b
 type Bindings = {
 	// eslint-disable-next-line no-undef
 	DB: D1Database;
+	// eslint-disable-next-line no-undef
+	ASSETS: Fetcher;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -13,8 +15,8 @@ const app = new Hono<{ Bindings: Bindings }>();
 // CORS middleware - allows all origins
 app.use('/*', cors());
 
-// POST /bookmarks - Create a new bookmark
-app.post('/bookmarks', async (c) => {
+// POST /api/bookmarks - Create a new bookmark
+app.post('/api/bookmarks', async (c) => {
 	const body: CreateBookmarkRequest = await c.req.json();
 	const id = uuid();
 
@@ -25,8 +27,8 @@ app.post('/bookmarks', async (c) => {
 	return c.json<CreateBookmarkResponse>({ success: true, id });
 });
 
-// GET /bookmarks - Fetch all bookmarks or filter by tag
-app.get('/bookmarks', async (c) => {
+// GET /api/bookmarks - Fetch all bookmarks or filter by tag
+app.get('/api/bookmarks', async (c) => {
 	const tagFilter = c.req.query('tag');
 
 	const stmt = tagFilter
@@ -38,7 +40,9 @@ app.get('/bookmarks', async (c) => {
 	return c.json<Bookmark[]>(results as Bookmark[]);
 });
 
-// 404 handler
-app.notFound((c) => c.text('Not Found', 404));
+// Serve SPA for all other routes
+app.get('*', (c) => {
+	return c.env.ASSETS.fetch(c.req.raw);
+});
 
 export default app;
